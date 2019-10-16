@@ -1,6 +1,6 @@
 import time, sys
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 from blessings import Terminal
 term = Terminal()
@@ -28,14 +28,14 @@ class GoL:
         # TODO: this is extremely crappy way of achieving this goal
         # needs a ton of optimization
         n,m = self.board_shape
-        # temporarily setup the i,j to -1 first, this avoids making 
-        # a copy of the full state matrix
-        real_value_of_cell = self.state[i,j]
-        self.state[i,j] = -1
+        # pull the value of cell, 1 if alive, we'll use this later
+        # to sub from the total number of live cells around the target
+        val_of_cell = self.state[i,j]
         # This defines the square region we want to pull out
         row_l, row_h = i-1, i+2
         col_l, col_h = j-1, j+2
-        # We can't have indices < 0 or >= max value 
+        # We can't have indices < 0 or >= max value, this 
+        # handles sides and corners for us
         if row_l < 0:
             row_l = 0
         if col_l < 0:
@@ -44,19 +44,16 @@ class GoL:
             row_h = n-1
         if col_h >= m:
             col_h = m-1
-        # This pulls the correct region and our original i,j value is -1
+        # This pulls the correct region around target
         region = self.state[row_l:row_h,col_l:col_h]
-        # Now we can get the live and dead cells 
-        live_cells = np.count_nonzero(region==1)
-        dead_cells = np.count_nonzero(region==0)
-        # Now that we are done, reset back to original state
-        self.state[i,j] = real_value_of_cell
+        # Now we can get the live celll, - our target cell (0 if dead, -1 if alive)
+        live_cells = np.count_nonzero(region==1) - val_of_cell
         # 1) Any live cell with fewer than two live neighbours dies, as if by underpopulation.
         # 2) Any live cell with two or three live neighbours lives on to the next generation.
         # 3) Any live cell with more than three live neighbours dies, as if by overpopulation.
         # 4) Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
         # We are implmenting these rules in these ifs
-        if self.state[i,j] == 1:
+        if val_of_cell == 1:
             if live_cells < 2: 
                 return 0
             if live_cells > 3:
