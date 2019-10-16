@@ -1,5 +1,7 @@
 import time, sys
 import numpy as np
+import argparse 
+
 # import matplotlib.pyplot as plt
 
 from blessings import Terminal
@@ -95,10 +97,22 @@ def check_end(state):
 
 
 if __name__ == "__main__":
-    t = 100 # number of timesteps to simulate for 
+    parser = argparse.ArgumentParser(description='Simple Conway\'s game of life implementation')
+    parser.add_argument('-c', '--column', dest='column', type=int, default=30,
+                        help='number of columns of the 2D grid')
+    parser.add_argument('-r', '--row', dest='row', type=int, default=30,
+                        help='number of columns of the 2D grid')
+    parser.add_argument('-t', '--time', dest='time', type=int, default=100,
+                        help='the number of steps to run the simulation for')
+    
+    args = parser.parse_args()
+
+    # initialize the game class
+    G = GoL(args.row, args.column)
+    # setup timer
     timer = 0
-    G = GoL(35,35)
-    while timer < t:
+    # run until we reach the requested step count
+    while timer < args.time:
         print(term.clear())
         print("Current time: {}".format(timer))
         print_board_state(G.get_state())
@@ -110,4 +124,4 @@ if __name__ == "__main__":
             print("Everybody is dead, hope you are happy")
             break
         time.sleep(0.07)
-    print("Congratulations, not everyone is dead")
+    print("Congratulations, not everyone is dead, just most of them")
