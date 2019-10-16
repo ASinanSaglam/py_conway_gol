@@ -7,3 +7,5 @@ TODO:
 3) Plenty optimization on the table for the stepping algorithm
 4) Add argparse for command line arguments 
 5) Optional: allow custom colors via said arguments
+
+Uses [numpy](https://numpy.org) and requires the [blessings](https://github.com/erikrose/blessings) library which is used for terminal output.
