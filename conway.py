@@ -122,6 +122,6 @@ if __name__ == "__main__":
             print("Current time: {}".format(timer))
             print_board_state(G.get_state())
             print("Everybody is dead, hope you are happy")
-            break
+            sys.exit(0)
         time.sleep(0.07)
     print("Congratulations, not everyone is dead, just most of them")
